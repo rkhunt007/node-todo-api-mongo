@@ -6,13 +6,14 @@ const {Todo} = require('./../models/todo');
 const {ObjectID} = require('mongodb');
 
 
-const todos = [{
+var todos = [{
 	_id: new ObjectID(),
 	text: "First todo",
 }, {
 	_id: new ObjectID(),
 	text: "Second todo"
 }];
+
 beforeEach((done) => {
 	Todo.remove({}).then(() => {
 		return Todo.insertMany(todos);
@@ -76,6 +77,8 @@ describe('GET /todos', () => {
 	});
 });
 
+
+
 describe('GET /todos/:id', () => {
 	it('shoud return a todo', (done) => {
 		request(app)
@@ -105,6 +108,48 @@ describe('GET /todos/:id', () => {
 			.expect((res) => {
 				expect(res.text).toBe("Invalid Id");
 			})
+			.end(done);
+	});
+});
+
+todos = [{
+		_id: new ObjectID(),
+		text: "First todo",
+	}];
+
+describe('DELETE /todos/:id', () => {
+	it('shoud remove a todo', (done) => {
+		request(app)
+			.delete(`/todos/${todos[0]._id.toHexString()}`)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo._id).toBe(todos[0]._id.toHexString());
+			}) 
+			.end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+				Todo.findById(todos[0]._id.toHexString()).then((todos) => {
+					expect(todos).toNotExist()
+					done();
+				}).catch((e) => {
+					done(e);
+				})
+			});
+	});
+
+	it('shoud return 404 if todo not found delete', (done) => {
+		var id = new ObjectID();
+		request(app)
+			.delete(`/todos/${id}`)
+			.expect(404)
+			.end(done);
+	});
+
+	it('shoud return 404 for non object ids', (done) => {
+		request(app)
+			.delete(`/todos/123`)
+			.expect(404)
 			.end(done);
 	});
 });
