@@ -6,6 +6,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const jwt = require('jsonwebtoken');
 const _ = require('lodash');
+const bcrypt = require('bcryptjs');
 
 /*
 	For more Mongoose validation go to http://mongoosejs.com/docs/validation.html
@@ -75,6 +76,25 @@ UserSchema.statics.findByToken = function(token) {
 		'tokens.access': 'auth' 
 	});
 }
+
+/*
+	Here we are using mongoose middleware to perform some operation
+	before saving the data to database.
+	Ref. http://mongoosejs.com/docs/middleware.html
+*/
+UserSchema.pre('save', function(next) {
+	var user = this;
+	if (user.isModified('password')) {
+		bcrypt.genSalt(10, (err, salt) => {
+			bcrypt.hash(user.password, salt, (err, hash) => {
+				user.password = hash;
+				next();
+			})
+		});
+	} else {
+		next();
+	}
+});
 
 var User = mongoose.model('User', UserSchema);
 
