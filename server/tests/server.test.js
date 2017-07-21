@@ -4,23 +4,10 @@ const request = require('supertest');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 const {ObjectID} = require('mongodb');
+const {todos, populateTodos, users, populateUsers} = require('./seed/seed');
 
-
-var todos = [{
-	_id: new ObjectID(),
-	text: "First todo",
-}, {
-	_id: new ObjectID(),
-	text: "Second todo"
-}];
-
-beforeEach((done) => {
-	Todo.remove({}).then(() => {
-		return Todo.insertMany(todos);
-	}).then(() => {
-		done();
-	})
-});
+beforeEach(populateUsers);
+beforeEach(populateTodos);
 
 describe('POST /todos', () => {
 	it('shoud create a new todo', (done) => {
@@ -112,11 +99,6 @@ describe('GET /todos/:id', () => {
 	});
 });
 
-todos = [{
-		_id: new ObjectID(),
-		text: "First todo",
-	}];
-
 describe('DELETE /todos/:id', () => {
 	it('shoud remove a todo', (done) => {
 		request(app)
@@ -138,18 +120,4 @@ describe('DELETE /todos/:id', () => {
 			});
 	});
 
-	it('shoud return 404 if todo not found delete', (done) => {
-		var id = new ObjectID();
-		request(app)
-			.delete(`/todos/${id}`)
-			.expect(404)
-			.end(done);
-	});
-
-	it('shoud return 404 for non object ids', (done) => {
-		request(app)
-			.delete(`/todos/123`)
-			.expect(404)
-			.end(done);
-	});
 });
