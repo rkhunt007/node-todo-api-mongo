@@ -65,8 +65,6 @@ describe('GET /todos', () => {
 	});
 });
 
-
-
 describe('GET /todos/:id', () => {
 	it('shoud return a todo', (done) => {
 		request(app)
@@ -100,29 +98,6 @@ describe('GET /todos/:id', () => {
 	});
 });
 
-describe('DELETE /todos/:id', () => {
-	it('shoud remove a todo', (done) => {
-		request(app)
-			.delete(`/todos/${todos[0]._id.toHexString()}`)
-			.expect(200)
-			.expect((res) => {
-				expect(res.body.todo._id).toBe(todos[0]._id.toHexString());
-			}) 
-			.end((err, res) => {
-				if (err) {
-					return done(err);
-				}
-				Todo.findById(todos[0]._id.toHexString()).then((todos) => {
-					expect(todos).toNotExist()
-					done();
-				}).catch((e) => {
-					done(e);
-				})
-			});
-	});
-
-});
-
 describe('GET /users/me', () => {
 	it('shoud return user if authenticated', (done) => {
 		request(app)
@@ -145,6 +120,29 @@ describe('GET /users/me', () => {
 			})
 			.end(done);
 	});
+});
+
+describe('DELETE /todos/:id', () => {
+	it('shoud remove a todo', (done) => {
+		request(app)
+			.delete(`/todos/${todos[0]._id.toHexString()}`)
+			.expect(200)
+			.expect((res) => {
+				expect(res.body.todo._id).toBe(todos[0]._id.toHexString());
+			}) 
+			.end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+				Todo.findById(todos[0]._id.toHexString()).then((todos) => {
+					expect(todos).toNotExist()
+					done();
+				}).catch((e) => {
+					done(e);
+				})
+			});
+	});
+
 });
 
 describe('POST /users', () => {
@@ -243,4 +241,24 @@ describe('POST /users/login', () => {
 			});
 	});
 
+});
+
+describe('DELETE /users/me/token', () => {
+	it('shoud remove auth token on logout', (done) => {
+		request(app)
+			.delete('/users/me/token')
+			.set('x-auth', users[0].tokens[0].token)
+			.expect(200)
+			.end((err, res) => {
+				if (err) {
+					return done(err);
+				}
+				User.findById(users[0]._id.toHexString()).then((user) => {
+					expect(user.tokens.length).toBe(0);
+					done();
+				}).catch((e) => {
+					done(e);
+				})
+			});
+	});
 });
