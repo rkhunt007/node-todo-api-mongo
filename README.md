@@ -9,7 +9,8 @@
  
  Deployed on heroku on below URL.
  
- https://marvelous-kenai-fjords-86013.herokuapp.com
+ https://aqueous-peak-48440.herokuapp.com/ 
+ (Not working on heroku as of now as versioning issues. Run on local environment for testing)
 
  Following are the APIs.
  
