@@ -16,6 +16,7 @@ const _ = require('lodash');
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
+var cors = require('cors')
 var {authenticate} = require('./middleware/authenticate');
 
 const {ObjectID} = require('mongodb');
@@ -23,7 +24,14 @@ const {ObjectID} = require('mongodb');
 const port = process.env.PORT;
 
 var app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
+var corsOptions = {
+  origin: 'http://localhost:8100',
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204 
+  allowedHeaders: 'x-auth,Content-Type,Authorization',
+  exposedHeaders: 'x-auth'
+}
+app.use(cors());
 
 app.post('/todos', authenticate, (req, res) => {
 	var newTodo = new Todo({
@@ -139,6 +147,17 @@ app.get('/users/me', authenticate, (req, res) => {
 	res.send(res.user);
 });
 
+app.get('/users', (req, res) => {
+	console.log("In Users");
+	User.find({}).then((todos) => {
+		res.send({
+			todos
+		})
+	}, (e) => {
+		res.status(400).send(e);
+	})
+});
+
 /* 
 	Login route
 */
@@ -146,7 +165,7 @@ app.post('/users/login', (req, res) => {
 	var body =  _.pick(req.body, ['email', 'password']);
 	User.findByCredentials(body.email, body.password).then((user) => {
 		return user.generateAuthToken().then((token) => {
-			res.header('x-auth', token).send(user);
+			res.header('x-auth', token).send(token);
 		});
 	}).catch((e) => {
 		res.status(400).send();
