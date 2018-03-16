@@ -1,6 +1,6 @@
 # node-todo-api-mongo
  
- This is CRUD APIs using todos samples. Also contains login/signup JWT authentication APIs.
+This is CRUD APIs using todos samples. Also contains login/signup JWT authentication APIs.
  
  Technology stack:
  Node.js
