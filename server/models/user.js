@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 const mongoose = require('mongoose');
 /* 
 	For this we install validor npm package
@@ -13,34 +15,36 @@ const bcrypt = require('bcryptjs');
 */
 
 // To create custom model methods
-var UserSchema = new mongoose.Schema({
-	email: {
-		type: String,
-		required: true,
-		minlength: 1,
-		trim: true,
-		unique: true,
-		validate: {
-			validator: validator.isEmail,
-			message: '{VALUE} is not a valid email'
-		}
-	},
-	password: {
-		type: String,
-		require: true,
-		minlength: 6
-	},
-	tokens: [{
-		access: {
+var UserSchema = new mongoose.Schema(
+	{
+		email: {
 			type: String,
-			required: true
+			required: true,
+			minlength: 1,
+			trim: true,
+			unique: true,
+			validate: {
+				validator: validator.isEmail,
+				message: '{VALUE} is not a valid email'
+			}
 		},
-		token: {
+		password: {
 			type: String,
-			required: true
-		}
-	}]
-});
+			require: true,
+			minlength: 6
+		},
+		tokens: [{
+			access: {
+				type: String,
+				required: true
+			},
+			token: {
+				type: String,
+				required: true
+			}
+		}]
+	}, { usePushEach: true }
+);
 
 UserSchema.methods.toJSON = function () {
 	var user = this;
@@ -55,10 +59,9 @@ UserSchema.methods.generateAuthToken = function() {
 	var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
 	
 	user.tokens.push({access, token});
-
 	return user.save().then(() => {
 		return token;
-	})
+	});
 };
 
 UserSchema.methods.removeToken = function(token) {
@@ -84,7 +87,7 @@ UserSchema.statics.findByToken = function(token) {
 		'tokens.token': token,
 		'tokens.access': 'auth' 
 	});
-}
+};
 
 UserSchema.statics.findByCredentials = function(email, password) {
 	var User = this;
@@ -100,9 +103,9 @@ UserSchema.statics.findByCredentials = function(email, password) {
 					reject();
 				}
 			});
-		})
+		});
 		
-	})
+	});
 };
 
 /*
@@ -117,7 +120,7 @@ UserSchema.pre('save', function(next) {
 			bcrypt.hash(user.password, salt, (err, hash) => {
 				user.password = hash;
 				next();
-			})
+			});
 		});
 	} else {
 		next();

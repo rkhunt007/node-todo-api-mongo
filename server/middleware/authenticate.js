@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var {User} = require('./../models/user');
 
 var authenticate = (req, res, next) => {
@@ -13,7 +15,7 @@ var authenticate = (req, res, next) => {
 	}).catch((e) => {
 		res.status(401).send(e);
 	});
-}
+};
 
 module.exports = {
 	authenticate

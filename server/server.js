@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var env = process.env.NODE_ENV || 'development';
 
 if (env === "development" || env === "test") {
@@ -6,7 +8,7 @@ if (env === "development" || env === "test") {
 
 	Object.keys(envConfig).forEach((key) => {
 		process.env[key] = envConfig[key];
-	})
+	});
 }
 
 var express = require('express');
@@ -23,7 +25,7 @@ const {ObjectID} = require('mongodb');
 const port = process.env.PORT;
 
 var app = express();
-app.use(bodyParser.json())
+app.use(bodyParser.json());
 
 app.post('/todos', authenticate, (req, res) => {
 	var newTodo = new Todo({
@@ -44,15 +46,15 @@ app.get('/todos', authenticate, (req, res) => {
 	}).then((todos) => {
 		res.send({
 			todos
-		})
+		});
 	}, (e) => {
 		res.status(400).send(e);
-	})
+	});
 });
 
 // GET /todos/12345 
 app.get('/todos/:id', authenticate, (req, res) => {
-	var id = req.params.id
+	var id = req.params.id;
 	if (!ObjectID.isValid(id)) {
 		res.status(404).send("Invalid Id");
 	}
@@ -65,14 +67,14 @@ app.get('/todos/:id', authenticate, (req, res) => {
 		}
 		res.send({
 			todo
-		})
+		});
 	}, (e) => {
 		res.status(400).send("Error while finding todo");
-	})
+	});
 });
 
 app.delete('/todos/:id', authenticate, (req, res) => {
-	var id = req.params.id
+	var id = req.params.id;
 	if (!ObjectID.isValid(id)) {
 		res.status(404).send("Invalid Id");
 	}
@@ -88,7 +90,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
 	}).catch( (e) => {
 		res.status(400).send("Error while finding todo");
 	});
-})
+});
 
 
 app.patch('/todos/:id', authenticate, (req, res) => {
@@ -116,7 +118,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 		res.send({todo});
 	}).catch((e) => {
 		res.status(400).send();
-	})
+	});
 });
 
 /* 
@@ -125,9 +127,8 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 app.post('/users', (req, res) => {
 	var body =  _.pick(req.body, ['email', 'password']);
 	var user = new User(body);
-
 	user.save().then((user) => {
-		return user.generateAuthToken()
+		return user.generateAuthToken();
 	}).then((token) => {
 		res.header('x-auth', token).send(user);
 	}).catch((e) => {
@@ -158,7 +159,7 @@ app.delete('/users/me/token', authenticate, (req, res) => {
 		res.status(200).send();
 	}, () => {
 		res.status(400).send();
-	})
+	});
 });
 
 app.listen(port, () => {
