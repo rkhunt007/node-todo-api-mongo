@@ -54,15 +54,11 @@ UserSchema.methods.toJSON = function () {
 };
 
 UserSchema.methods.generateAuthToken = function() {
-	console.log('## in generated token ');
 	var user = this;
 	var access = 'auth';
-	console.log('## in generated token jwt ',  process.env.NODE_ENV);
 	var token = jwt.sign({_id: user._id.toHexString(), access : access}, process.env.JWT_SECRET).toString();
-	console.log('## generated token ', token);
 	user.tokens.push({access, token});
 	return user.save().then(() => {
-		console.log('## saved user after generating token ', token);
 		return token;
 	});
 };
