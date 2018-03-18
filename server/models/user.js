@@ -57,8 +57,8 @@ UserSchema.methods.generateAuthToken = function() {
 	console.log('## in generated token ');
 	var user = this;
 	var access = 'auth';
-	console.log('## in generated token jwt ', jwt);
-	var token = jwt.sign({_id: user._id.toHexString(), access}, process.env.JWT_SECRET).toString();
+	console.log('## in generated token jwt ', jwt ,user._id, process.env);
+	var token = jwt.sign({_id: user._id.toHexString(), access : access}, process.env.JWT_SECRET).toString();
 	console.log('## generated token ', token);
 	user.tokens.push({access, token});
 	return user.save().then(() => {
