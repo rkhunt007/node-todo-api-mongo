@@ -14,6 +14,7 @@ if (env === "development" || env === "test" || env === "production") {
 var express = require('express');
 var bodyParser = require('body-parser');
 const _ = require('lodash');
+var cors = require('cors'),
 
 var {mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
@@ -26,6 +27,7 @@ const port = process.env.PORT;
 
 var app = express();
 app.use(bodyParser.json());
+app.use(cors({origin:true,credentials: true}));
 
 app.post('/todos', authenticate, (req, res) => {
 	var newTodo = new Todo({
