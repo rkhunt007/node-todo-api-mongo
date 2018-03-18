@@ -8,5 +8,8 @@
 		"PORT": 3000,
 		"MONGODB_URI": "mongodb://localhost:27017/TodoApp",
 		"JWT_SECRET": "123abc"
+	},
+	"production": {
+		"JWT_SECRET": "123abc"
 	}
 }
