@@ -134,7 +134,7 @@ app.post('/users', (req, res) => {
 	}).then((token) => {
 		console.log(':: server.js after generateAuthToken :: ');
 		res.header('x-auth', token);
-		console.log('::res::', res);
+		// console.log('::res::', res);
 		console.log('::res.getHeaders()::', res.getHeaders());
 		var response = {
 			body: user,
