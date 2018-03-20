@@ -135,20 +135,19 @@ app.post('/users', (req, res) => {
 		console.log(':: server.js after generateAuthToken :: ');
 		res.header('x-auth', token);
 		var headers = {};
-		// console.log('::res::', res);
-		// console.log('::res.getHeaders()::', res.getHeaders());
 		try {
 			headers = res.getHeaders();
 		}
 		catch(e) {
 			console.log('error getting headers');
+			headers = { 'x-auth': token };
 		}
 		var response = {
 			body: user,
 			status: 200,
 			headers: headers
 		};
-		res.send(response);
+		res.status(200).send(response);
 	}).catch((e) => {
 		console.log(':: error in generateAuthToken :: ');
 		res.status(400).send(e);
