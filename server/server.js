@@ -134,7 +134,9 @@ app.post('/users', (req, res) => {
 	}).then((token) => {
 		console.log(':: server.js after generateAuthToken :: ');
 		res.header('x-auth', token);
-		let response = {
+		console.log('::res::', res);
+		console.log('::res.getHeaders()::', res.getHeaders());
+		var response = {
 			body: user,
 			status: 200,
 			headers: res.getHeaders()
@@ -158,7 +160,7 @@ app.post('/users/login', (req, res) => {
 	User.findByCredentials(body.email, body.password).then((user) => {
 		return user.generateAuthToken().then((token) => {
 			res.header('x-auth', token);
-			let response = {
+			var response = {
 				body: user,
 				status: 200,
 				headers: res.getHeaders()
