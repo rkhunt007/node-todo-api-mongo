@@ -138,8 +138,7 @@ app.post('/users', (req, res) => {
 		console.log('::res.getHeaders()::', res.getHeaders());
 		var response = {
 			body: user,
-			status: 200,
-			headers: res.getHeaders()
+			status: 200
 		};
 		res.status(200).send(response);
 	}).catch((e) => {
