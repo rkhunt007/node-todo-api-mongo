@@ -34,7 +34,6 @@ app.post('/todos', authenticate, (req, res) => {
 		text: req.body.text,
 		_creator: req.user._id
 	});
-
 	newTodo.save().then((doc) => {
 		res.send(doc);
 	}, (e) => {
@@ -129,6 +128,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
 app.post('/users', (req, res) => {
 	var body = _.pick(req.body, ['email', 'password']);
 	var user = new User(body);
+	console.log(':: post todos :: ');
 	user.save().then((user) => {
 		return user.generateAuthToken();
 	}).then((token) => {
@@ -140,6 +140,7 @@ app.post('/users', (req, res) => {
 		};
 		res.status(200).send(response);
 	}).catch((e) => {
+		console.log(':: error in generateAuthToken :: ');
 		res.status(400).send(e);
 	});
 });
