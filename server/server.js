@@ -140,7 +140,7 @@ app.post('/users', (req, res) => {
 			body: user,
 			status: 200
 		};
-		res.status(200).send(response);
+		res.send(response);
 	}).catch((e) => {
 		console.log(':: error in generateAuthToken :: ');
 		res.status(400).send(e);
