@@ -145,7 +145,8 @@ app.post('/users', (req, res) => {
 		var response = {
 			body: user,
 			status: 200,
-			headers: headers
+			headers: headers,
+			'x-auth': token 
 		};
 		res.status(200).send(response);
 	}).catch((e) => {
