@@ -134,18 +134,9 @@ app.post('/users', (req, res) => {
 	}).then((token) => {
 		console.log(':: server.js after generateAuthToken :: ');
 		res.header('x-auth', token);
-		var headers = {};
-		try {
-			headers = res.getHeaders();
-		}
-		catch(e) {
-			console.log('error getting headers');
-			headers = { 'x-auth': token };
-		}
 		var response = {
 			body: user,
 			status: 200,
-			headers: headers,
 			'x-auth': token 
 		};
 		res.status(200).send(response);
@@ -170,7 +161,7 @@ app.post('/users/login', (req, res) => {
 			var response = {
 				body: user,
 				status: 200,
-				headers: res.getHeaders()
+				'x-auth': token 
 			};
 			res.status(200).send(response);
 		});
