@@ -11,7 +11,7 @@ beforeEach(populateUsers);
 beforeEach(populateTodos);
 
 describe('POST /todos', () => {
-	it('shoud create a new todo', (done) => {
+	it('should create a new todo', (done) => {
 		var text = "test todo text";
 		request(app)
 			.post('/todos')
@@ -35,7 +35,7 @@ describe('POST /todos', () => {
 			});
 	});
 
-	it('shoud not create with invalid data', (done) => {
+	it('should not create with invalid data', (done) => {
 		request(app)
 			.post('/todos')
 			.set('x-auth', users[0].tokens[0].token)
@@ -56,7 +56,7 @@ describe('POST /todos', () => {
 });
 
 describe('GET /todos', () => {
-	it('shoud get all todos', (done) => {
+	it('should get all todos', (done) => {
 		request(app)
 			.get('/todos')
 			.set('x-auth', users[0].tokens[0].token)
@@ -69,7 +69,7 @@ describe('GET /todos', () => {
 });
 
 describe('GET /todos/:id', () => {
-	it('shoud return a todo', (done) => {
+	it('should return a todo', (done) => {
 		request(app)
 			.get(`/todos/${todos[0]._id.toHexString()}`)
 			.set('x-auth', users[0].tokens[0].token)
@@ -80,7 +80,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	it('shoud not return a todo created by other user', (done) => {
+	it('should not return a todo created by other user', (done) => {
 		request(app)
 			.get(`/todos/${todos[1]._id.toHexString()}`)
 			.set('x-auth', users[0].tokens[0].token)
@@ -88,7 +88,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	it('shoud return 404 if todo not found', (done) => {
+	it('should return 404 if todo not found', (done) => {
 		var id = new ObjectID();
 		request(app)
 			.get(`/todos/${id}`)
@@ -100,7 +100,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	it('shoud return 404 for non object ids', (done) => {
+	it('should return 404 for non object ids', (done) => {
 		request(app)
 			.get(`/todos/123`)
 			.set('x-auth', users[0].tokens[0].token)
@@ -113,7 +113,7 @@ describe('GET /todos/:id', () => {
 });
 
 describe('GET /users/me', () => {
-	it('shoud return user if authenticated', (done) => {
+	it('should return user if authenticated', (done) => {
 		request(app)
 			.get('/users/me')
 			.set('x-auth', users[0].tokens[0].token)
@@ -150,7 +150,7 @@ describe('DELETE /todos/:id', () => {
 					return done(err);
 				}
 				Todo.findById(todos[1]._id.toHexString()).then((todos) => {
-					expect(todos).toNotExist()
+					expect(todos).toBeFalsy()
 					done();
 				}).catch((e) => {
 					done(e);
@@ -158,7 +158,7 @@ describe('DELETE /todos/:id', () => {
 			});
 	});
 
-	xit('should not remove a todo', (done) => {
+	it('should not remove a todo', (done) => {
 		request(app)
 			.delete(`/todos/${todos[0]._id.toHexString()}`)
 			.set('x-auth', users[1].tokens[0].token)
@@ -168,7 +168,7 @@ describe('DELETE /todos/:id', () => {
 					return done(err);
 				}
 				Todo.findById(todos[0]._id.toHexString()).then((todo) => {
-					expect(todo).toExist();
+					expect(todo).toBeTruthy();
 					done();
 				}).catch((e) => {
 					done(e);
@@ -178,7 +178,7 @@ describe('DELETE /todos/:id', () => {
 });
 
 describe('POST /users', () => {
-	it('shoud create a user', (done) => {
+	it('should create a user', (done) => {
 		var email = "tom@test.com";
 		var password = "123abcd";
 		request(app)
@@ -186,18 +186,17 @@ describe('POST /users', () => {
 			.send({ email, password })
 			.expect(200)
 			.expect((res) => {
-				expect(res.headers['x-auth']).toExist();
-				expect(res.body._id).toExist();
+				expect(res.headers['x-auth']).toBeTruthy();
+				expect(res.body._id).toBeTruthy();
 				expect(res.body.email).toBe(email);
 			})
 			.end((err) => {
 				if (err) {
 					return done(err);
 				}
-
 				User.findOne({ email }).then((user) => {
-					expect(user).toExist();
-					expect(user.password).toNotBe(password);
+					expect(user).toBeTruthy();
+					expect(user.password).not.toBe(password);
 					done();
 				}).catch((e) => done(e));
 			});
@@ -224,7 +223,7 @@ describe('POST /users', () => {
 });
 
 describe('POST /users/login', () => {
-	it('shoud login a user and return valid auth token', (done) => {
+	it('should login a user and return valid auth token', (done) => {
 		request(app)
 			.post('/users/login')
 			.send({
@@ -233,14 +232,14 @@ describe('POST /users/login', () => {
 			})
 			.expect(200)
 			.expect((res) => {
-				expect(res.headers['x-auth']).toExist();
+				expect(res.headers['x-auth']).toBeTruthy();
 			})
 			.end((err, res) => {
 				if (err) {
 					return done(err);
 				}
 				User.findById(users[1]._id).then((user) => {
-					expect(user.tokens[1]).toInclude({
+					expect(user.tokens[1]).toMatchObject({
 						access: 'auth',
 						token: res.headers['x-auth']
 					});
@@ -260,7 +259,7 @@ describe('POST /users/login', () => {
 			})
 			.expect(400)
 			.expect((res) => {
-				expect(res.headers['x-auth']).toNotExist();
+				expect(res.headers['x-auth']).toBeFalsy();
 			})
 			.end((err, res) => {
 				if (err) {
@@ -276,7 +275,7 @@ describe('POST /users/login', () => {
 });
 
 describe('DELETE /users/me/token', () => {
-	it('shoud remove auth token on logout', (done) => {
+	it('should remove auth token on logout', (done) => {
 		request(app)
 			.delete('/users/me/token')
 			.set('x-auth', users[0].tokens[0].token)

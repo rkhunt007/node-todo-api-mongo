@@ -5,7 +5,6 @@ const MongoClient = require('mongodb').MongoClient;
 
 const {ObjectID} = require('mongodb');
 var obj = new ObjectID();
-console.log(obj);
 
 // Connection URL 
 var url = 'mongodb://localhost:27017/myproject';
@@ -73,7 +72,6 @@ var findDocuments = function(db) {
   		return console.log("Error finding documents");
   	}
     console.log("Found the following records");
-    console.log(JSON.stringify(docs, undefined, 2));
   });
 }
 
@@ -83,8 +81,6 @@ var findDocumentsCount = function(db) {
   	if(err) {
   		return console.log("Error finding documents count");
   	}
-    console.log("Found the following records count");
-    console.log(count);
   });
 }
 
