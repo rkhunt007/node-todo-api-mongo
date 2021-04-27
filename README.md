@@ -32,3 +32,15 @@ GET /todos/id : will return a todo by id. need to send auth token.
 DELETE /todos/id : will delete a todo by id. need to send auth token.
 
 PATCH /todos/id: will update a todo by id. need to send auth token and todo text to be updated.
+
+### Run the tests with mocha
+
+install mocha 
+```javascript
+npm i -g mocha
+
+npm test
+```
+
+
+
