@@ -36,7 +36,7 @@ const todos = [{
 }];
 
 const populateTodos = (done) => {
-	Todo.remove({}).then(() => {
+	Todo.deleteMany({}).then(() => {
 		return Todo.insertMany(todos);
 	}).then(() => {
 		done();
@@ -44,7 +44,7 @@ const populateTodos = (done) => {
 };
 
 const populateUsers = (done) => {
-	User.remove({}).then(() => {
+	User.deleteMany({}).then(() => {
 		var userOne = new User(users[0]).save();
 		var userTwo = new User(users[1]).save();
 

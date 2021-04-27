@@ -7,7 +7,13 @@ mongoose.set('useFindAndModify', false);
 mongoose.set('useCreateIndex', true);
 
 mongoose.Promise = global.Promise;
-mongoose.connect(process.env.MONGODB_URI || url, { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(
+    process.env.MONGODB_URI || url, { 
+        useNewUrlParser: true,
+        useUnifiedTopology: true
+    }).then(() => {
+        console.log('DB connected')
+    });
 
 module.exports = {
 	mongoose
