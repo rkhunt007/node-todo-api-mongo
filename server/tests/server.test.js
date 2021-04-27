@@ -80,7 +80,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	xit('should not return a todo created by other user', (done) => {
+	it('should not return a todo created by other user', (done) => {
 		request(app)
 			.get(`/todos/${todos[1]._id.toHexString()}`)
 			.set('x-auth', users[0].tokens[0].token)
@@ -88,7 +88,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	xit('should return 404 if todo not found', (done) => {
+	it('should return 404 if todo not found', (done) => {
 		var id = new ObjectID();
 		request(app)
 			.get(`/todos/${id}`)
@@ -100,7 +100,7 @@ describe('GET /todos/:id', () => {
 			.end(done);
 	});
 
-	xit('should return 404 for non object ids', (done) => {
+	it('should return 404 for non object ids', (done) => {
 		request(app)
 			.get(`/todos/123`)
 			.set('x-auth', users[0].tokens[0].token)

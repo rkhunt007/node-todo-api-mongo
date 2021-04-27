@@ -55,7 +55,7 @@ app.get('/todos', authenticate, (req, res) => {
 app.get('/todos/:id', authenticate, (req, res) => {
     var id = req.params.id;
     if (!ObjectID.isValid(id)) {
-        res.status(404).send("Invalid Id");
+        return res.status(404).send("Invalid Id");
     }
     Todo.findOne({
         _id: id,
